@@ -34,7 +34,7 @@ async function run() {
       const Places = await allPlaces.findOne(query);
       res.send(Places)
     })
-
+    // get
     app.get('/booking', async (req,res)=>{
       const email = req.query.email;
       const query = {email:email};
