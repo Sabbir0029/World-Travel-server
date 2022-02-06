@@ -20,6 +20,7 @@ async function run() {
     await client.connect();
     const database = client.db('WorldTravel');
     const allPlaces = database.collection('Places');
+    const bookingInfo = database.collection('bookingData');
 
     // GET
     app.get('/allPlaces', async (req,res) =>{
@@ -33,6 +34,27 @@ async function run() {
       const Places = await allPlaces.findOne(query);
       res.send(Places)
     })
+
+    app.get('/booking', async (req,res)=>{
+      const email = req.query.email;
+      const query = {email:email};
+      const cursor = bookingInfo.find(query);
+      const bookings = await cursor.toArray();
+      res.json(bookings);
+    })
+
+    app.post('/booking', async (req,res)=>{
+      const bookings = req.body;
+      const result = await bookingInfo.insertOne(bookings);
+      res.json(result);
+    })
+
+    app.delete('/booking/:id',async(req,res)=>{
+      const id = req.params.id
+      const cursor = {_id : ObjectId(id)}
+      const result = await bookingInfo.deleteOne(cursor)
+      res.json(result)
+  })
 
   } finally {
     // await client.close();
